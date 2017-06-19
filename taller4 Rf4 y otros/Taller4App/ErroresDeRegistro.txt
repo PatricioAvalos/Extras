@@ -1,0 +1,8 @@
+-------------------------------------------------------------------------------
+ Categoria        Campo no Valido      valor campo       error encontrado
+ -------------------------------------------------------------------------------
+\\
+\\
+Ingreso Persona Codigo Asignatura a  Codigo Asignatura no valido
+Ingreso Persona Codigo Asignatura 001  Codigo Asignatura no valido
+Ingreso Persona Rut 184759873  Rut no valido
