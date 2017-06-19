@@ -36,3 +36,25 @@
        if(correo.matches("[-\\w\\.]+@\\w+\\.\\w+")){
            StdOut.print("email valido");}
        else{StdOut.print("email no valido");}
+
+
+//alumno
+public double CalcularNota(int CantAsignaturas, int CantMsjEnviadosProfe){
+        int X = (CantMsjEnviadosProfe)/(CantAsignaturas);
+        double nota = 0.0;
+        if(X<5){
+        return 2.5;}
+        if(X>10){
+        return 7.0;}
+        else{return 5.0;}
+    }
+
+//profesor
+public double CalcularNota(int CantMsjRecibidos, int CantMsjEnviados){
+        float X = ((CantMsjEnviados)/(CantMsjRecibidos))*100;
+        if(X<33){
+        return 2.5;}
+        if(X>66){
+        return 7.0;}
+        else{return 5.0;}  
+    }
