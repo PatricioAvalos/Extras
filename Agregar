@@ -1,0 +1,164 @@
+
+//RF4
+//Registrar una nueva persona en una asignatura.
+   @Override 
+   public void RF4() {
+       // ingresar a la lista de personas y tambien al .txt de inscripcion y persona
+       StdOut.println("-----Ingresar Persona----");
+       StdOut.println("----------------------------");
+       StdOut.println("Ingrese la asignatura : ");
+       String codasig = StdIn.readString();
+       if(codasig.matches("[0-9]+") && codasig.length() > 2){
+       
+       StdOut.println("-----Ingresar Persona----");
+       StdOut.println("Ingrese un Rut con - : ");
+       String rut = StdIn.readString();
+       
+       //validar rut
+       boolean validacion = false;
+       try {
+        rut =  rut.toUpperCase();
+        rut = rut.replace(".", "");
+        rut = rut.replace("-", "");
+        int rutAux = Integer.parseInt(rut.substring(0, rut.length() - 1));
+        char dv = rut.charAt(rut.length() - 1);
+        int m = 0, s = 1;
+        for (; rutAux != 0; rutAux /= 10) {
+        s = (s + rutAux % 10 * (9 - m++ % 6)) % 11;
+        }
+        
+        if (dv == (char) (s != 0 ? s + 47 : 75)) {
+        validacion = true;
+        }
+ 
+        } catch (java.lang.NumberFormatException e) {
+        } catch (Exception e) {
+        }
+
+       if (validacion == true){
+       StdOut.println("Ingrese un Nombre Valido: ");
+       String nombre = StdIn.readString();
+       
+       //solo ingresar letras
+       if(nombre.matches(".*[a-zA-Z]+.*[a-zA-Z]")){
+       StdOut.println("Ingrese un Apellido Valido: ");
+       String apellido = StdIn.readString();
+       
+       //solo ingresar letras
+       if(apellido.matches(".*[a-zA-Z]+.*[a-zA-Z]"))
+          {
+       
+       StdOut.println("Ingrese un Correo Valido: ");
+       String correo = StdIn.readString();
+       //verificador correo
+       if(correo.matches("[-\\w\\.]+@\\w+\\.\\w+")){       
+       StdOut.println("Ingrese 1 si es profesor o 2 si es Alumno: ");
+       String tipo = StdIn.readString();
+       
+       if(tipo.equals("1")){
+          tipo = "profesor"; 
+          int cantm = 0; int cantasig = 0;
+          Alumno al = new Alumno(rut, nombre, apellido, correo, tipo, cantm, cantasig);
+          String alias = correo;
+          String[] parts = alias.split("@");
+          alias = parts[0].trim();
+          
+          Inscripcion ins = new Inscripcion(alias,codasig);
+          listaPersonas.ingresaAlumno(rut, nombre, apellido, correo, tipo, cantm, cantasig);
+          listaInscripciones.ingresar(ins);
+         
+          try
+            {   String FILE1 = "personas.txt";
+                FileWriter fw = new FileWriter(FILE1,true);
+                fw.write("\r\n"+rut+"\\"+nombre+"\\"+
+                        apellido+"\\"+correo+"\\"+tipo+"\\"+cantm+"\\"+cantasig);
+                String FILE2 = "inscripciones.txt";
+                FileWriter fw2 = new FileWriter(FILE2,true);
+                fw2.write("\r\n"+alias+","+codasig);
+                fw.close();
+                fw2.close();
+            }
+            catch(IOException ioe)
+            {System.err.println("IOException: " + ioe.getMessage());
+            }
+       
+        } 
+          
+       if(tipo.equals("2")){
+          tipo = "profesor"; 
+          int cantenv = 0; int cantrec = 0;
+          Profesor prof = new Profesor(rut, nombre, apellido, correo, tipo, cantrec, cantrec);
+          String alias = correo;
+          String[] parts = alias.split("@");
+          alias = parts[0].trim();
+          Inscripcion ins = new Inscripcion(alias,codasig);
+          listaPersonas.ingresaProfesor(rut, nombre, apellido, correo, tipo, cantrec, cantrec);
+          listaInscripciones.ingresar(ins);
+       
+          try
+            {   String FILE1 = "personas.txt";
+                FileWriter fw = new FileWriter(FILE1,true);
+                fw.write("\r\n"+rut+"\\"+nombre+"\\"+
+                        apellido+"\\"+correo+"\\"+tipo+"\\"+cantenv+"\\"+cantrec);
+                String FILE2 = "inscripciones.txt";
+                FileWriter fw2 = new FileWriter(FILE2,true);
+                fw2.write("\r\n"+alias+","+codasig);
+                fw.close();
+                fw2.close();
+            }
+            catch(IOException ioe)
+            {System.err.println("IOException: " + ioe.getMessage());
+            }
+          
+          }else{StdOut.println("tipo no valido");
+          registroErrores.add(new RegistroError("Ingreso Persona","Tipo",tipo,"9"));
+          }
+          }else{StdOut.println("Correo no valido");
+          registroErrores.add(new RegistroError("Ingreso Correo","Correo",correo,"3"));}//para el correo
+          }else{StdOut.println("Apellido no valido");
+          registroErrores.add(new RegistroError("Ingreso Apellido","Apellido",apellido,"7"));}//para el apellido
+          }else{StdOut.println("Nombre no valido");
+          registroErrores.add(new RegistroError("Ingreso Nombre","Nombre",nombre,"6"));}//para el nombre
+          }else{StdOut.println("Rut no valido");
+          registroErrores.add(new RegistroError("Ingreso Rut","Rut",rut,"1"));}// para el rut
+   
+          }else{StdOut.println("Codigo Asignatura no valida");
+          registroErrores.add(new RegistroError("Ingreso Asignatura","Asignatura",codasig,"5"));}// para la asignatura
+
+   }
+   
+   
+   
+   //Registro Error
+   public String errorEncontrato(){
+        
+        if (tipo.equals("1")){
+            tipo = "El rut no es valido";
+        }
+        if (tipo.equals("2")){
+            tipo = "El codigo no es numerico";
+        }
+        if (tipo.equals("3")){
+            tipo = "El Correo no es valido";
+        }
+        if (tipo.equals("4")){
+            tipo = "El rut no es valido (No es numerico)";
+        }
+        if (tipo.equals("5")){
+            tipo = "El codigo de asig. no es valido";
+        }
+        if (tipo.equals("6")){
+            tipo = "El nombre no es valido (contiene numeros)";
+        }
+        if (tipo.equals("7")){
+            tipo = "El apellido no es valido (contiene numeros)";
+        }
+        if (tipo.equals("9")){
+            tipo = "El tipo no es valido (1 = Alum // 2 = Prof)";
+        }
+        if (tipo.equals("10")){
+            tipo = "El rut no es valido";
+        }
+        return tipo;
+    }
+   
